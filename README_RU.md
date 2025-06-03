@@ -1,4 +1,4 @@
-[![English](https://img.shields.io/badge/lang-en-lightgrey.svg)](README_RU.md)
+[![English](https://img.shields.io/badge/lang-en-lightgrey.svg)](README.md)
 [![Русский](https://img.shields.io/badge/lang-ru-blue.svg)](README_ru.md)
 # Weather Bot 🤖🌦
 
