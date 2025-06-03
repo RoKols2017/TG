@@ -1,5 +1,5 @@
 [![English](https://img.shields.io/badge/lang-en-blue.svg)](README.md)
-[![Русский](https://img.shields.io/badge/lang-ru-lightgrey.svg)](README_ru.md)
+[![Русский](https://img.shields.io/badge/lang-ru-lightgrey.svg)](README_RU.md)
 # Weather Bot 🤖🌦
 
 Telegram bot that shows real‑time weather for any city using the **Yandex Weather API**. Built with
