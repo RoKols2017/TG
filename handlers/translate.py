@@ -1,9 +1,10 @@
-from aiogram import Router, types
+from aiogram import Router, types, F
 from utils.translator import to_english
 
 router = Router()
 
-@router.message(lambda m: m.text and not m.text.startswith("/"))
+# Все текстовые сообщения, которые НЕ начинаются с '/'
+@router.message(F.text & ~F.text.startswith("/"))
 async def translate_any_text(message: types.Message):
-    eng = to_english(message.text)
+    eng = await to_english(message.text)
     await message.reply(f"🇬🇧 {eng}")

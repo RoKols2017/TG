@@ -1,9 +1,7 @@
-import asyncio
 import os
-
 from aiogram import Router, types
-from aiogram.filters.command import CommandObject, Command
-
+from aiogram.filters.command import Command, CommandObject
+from aiogram.types import FSInputFile        # ← добавили
 from utils.voice import generate_voice
 
 router = Router()
@@ -20,7 +18,7 @@ async def cmd_voice(message: types.Message, command: CommandObject):
 
     ogg_path = await generate_voice(text, lang="ru")
     try:
-        with open(ogg_path, "rb") as f:
-            await message.answer_voice(f)
+        voice = FSInputFile(ogg_path)        # оборачиваем путь в InputFile
+        await message.answer_voice(voice)
     finally:
         os.remove(ogg_path)

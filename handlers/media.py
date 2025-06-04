@@ -1,25 +1,27 @@
 import os
 from datetime import datetime
 
-from aiogram import Router, types, Bot
-from aiogram.types import ContentType
+from aiogram import Router, F, Bot
+from aiogram.types import Message
 
 router = Router()
 
 IMG_DIR = "img"
 
 
-@router.message(ContentType.PHOTO)
-async def save_photo(message: types.Message, bot: Bot):
-    """Скачивает последнюю (наибольшего размера) фотографию из сообщения."""
-    photo = message.photo[-1]                      # самое большое превью
+@router.message(F.photo)
+async def save_photo(message: Message, bot: Bot) -> None:
+    """Скачивает самое большое фото из сообщения и кладёт в ./img."""
+    photo = message.photo[-1]                     # последнее = наибольшее
     file = await bot.get_file(photo.file_id)
-    file_path = file.file_path
-    ext = os.path.splitext(file_path)[1]           # .jpg, .png…
 
     os.makedirs(IMG_DIR, exist_ok=True)
+    ext = os.path.splitext(file.file_path)[1]     # .jpg / .jpeg / .png
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-    local_path = os.path.join(IMG_DIR, f"{photo.file_unique_id}_{ts}{ext}")
+    local_path = os.path.join(
+        IMG_DIR,
+        f"{photo.file_unique_id}_{ts}{ext}",
+    )
 
-    await bot.download_file(file_path, destination=local_path)
+    await bot.download_file(file.file_path, destination=local_path)
     await message.answer("📸 Фото сохранено!")
