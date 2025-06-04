@@ -65,6 +65,8 @@ $ python main.py
 | `YANDEX_API_KEY` | ✅ | `y0_AQAAA…` | Ключ API Яндекс.Погоды |
 | `YANDEX_GEOCODER_KEY` | ❌ | `12345-geo…` | Ключ Яндекс.Геокодера (платный) |
 | `NOMINATIM_USER_AGENT` | ❌ | `weather-bot` | UA‑строка для Nominatim‑fallback |
+| `DB_URL` | ✅ | `sqlite:///school_data.db` | Строка подключения к БД для разработки (SQLite) |
+| `DB_URL_PROD` | ❌ | `postgresql://user:pass@host/db` | Строка подключения к БД для продакшн (PostgreSQL) |
 
 Если `YANDEX_GEOCODER_KEY` не задан, бот автоматически переключится на OSM.
 
