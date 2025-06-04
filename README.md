@@ -1,30 +1,33 @@
 [![English](https://img.shields.io/badge/lang-en-blue.svg)](README.md)
 [![Русский](https://img.shields.io/badge/lang-ru-lightgrey.svg)](README_RU.md)
-# Weather Bot 🤖🌦
+# MultiBot 🤖✨
 
-Telegram bot that shows real‑time weather for any city using the **Yandex Weather API**. Built with
-[aiogram 3.20.0post0](https://docs.aiogram.dev/) and designed as a clean, minimal starter you can extend
-with new commands, FSM scenes, keyboards, or other services.
+MultiBot is a multifunctional Telegram bot: weather, voice messages, photo saving, and instant translation. Built with [aiogram 3.20.0post0](https://docs.aiogram.dev/), it is modular, fast, and easy to extend with new features.
 
 ---
 
-## ✨ Features
+## 🚦 Features & Commands
 
-| ✔️ | Description |
-|----|-------------|
-| `/weather <city>` | Current weather: temperature, feels‑like, condition, humidity, wind, pressure |
-| `/start`, `/help` | Basic onboarding commands |
-| Fallback geocoder | Tries **Yandex Geocoder** first; falls back to **OSM Nominatim** if no key |
-| Emoji & localisation | Human‑readable Russian output with matching emoji |
-| Async HTTP | Fully asynchronous via **aiohttp** |
-| Typed, modular code | Easy to debug, test, and extend |
+| Command / Action         | Description                                                                 |
+|-------------------------|-----------------------------------------------------------------------------|
+| `/start`                | Welcome message.                                                           |
+| `/help`                 | Shows this help with all available features.                               |
+| `/weather <city>`       | Get current weather for a city: temperature, feels like, condition, humidity, wind, pressure, emoji. |
+| `/voice <text>`         | Generate a voice message (TTS, Russian, via gTTS+ffmpeg).                  |
+| Send a photo            | The bot saves the largest photo to the `img/` folder on the server.         |
+| Send any text (not cmd) | The bot automatically translates any text to English and replies.           |
+
+- Geocoder: uses Yandex first, falls back to OSM Nominatim if no key.
+- Fully asynchronous, modular, and easily extensible.
+- Docker support, works on Windows and Linux.
+- Requires ffmpeg for media/voice features.
 
 ---
 
 ## 🛠 Stack
 
-* Python ≥3.10 (tested on 3.10 – 3.12)
-* aiogram 3.20.0post0
+* Python ≥3.10 (tested on 3.10 – 3.12)
+* aiogram 3.20.0post0
 * aiohttp for HTTP
 * python‑dotenv for configuration
 
@@ -37,7 +40,7 @@ with new commands, FSM scenes, keyboards, or other services.
 $ git clone https://github.com/your‑username/weather_bot.git
 $ cd weather_bot
 
-# 2) Virtual env
+# 2) Virtual env
 $ python -m venv .venv
 $ source .venv/bin/activate   # Windows: .venv/Scripts/activate
 
@@ -67,39 +70,37 @@ If `YANDEX_GEOCODER_KEY` is absent, the bot silently switches to OSM geocoding.
 
 ---
 
-## 🗄 Project layout
+## 🗄 Project Structure
 
 ```
-weather_bot/
-├── main.py              # entry point & polling loop
-├── config.py            # env vars & settings
-├── handlers/            # routers per feature
-│   ├── common.py        # /start, /help
-│   └── weather.py       # /weather command
-├── utils/
-│   ├── services.py      # Yandex+OSM geocoder & weather fetcher
-│   └── formatters.py    # format_weather → pretty output
-└── requirements.txt
+main.py                # Entry point, bot startup, router registration
+config.py              # Loads and validates environment variables
+handlers/
+  common.py            # /start, /help
+  weather.py           # /weather
+  voice.py             # /voice
+  media.py             # Photo saving
+  translate.py         # Auto-translate any text
+utils/
+  services.py          # Weather & geocoding (Yandex, OSM)
+  formatters.py        # Weather formatting with emoji
+  voice.py             # Voice message generation (gTTS + ffmpeg)
+  translator.py        # Google Translate API
+img/                   # Saved user photos
+requirements.txt       # Dependencies
+.env                   # Environment variables
 ```
 
 ---
 
-## 📟 Usage examples
+## 📟 Usage Examples
 
 ```
-/weather Москва
-/weather Berlin
+/weather Moscow
+/voice Hello, how are you?
 ```
-
-Typical reply:
-```
-🌤 Погода в Москва:
-Температура: 15 °C (ощущается как 13 °C)
-Состояние: малооблачно
-Влажность: 60 %
-Ветер: 3 м/с
-Давление: 760 мм рт. ст.
-```
+Send a photo — the bot will save it and reply with confirmation.
+Send any text — the bot will reply with the English translation.
 
 ---
 
@@ -148,3 +149,22 @@ MIT. Feel free to use and modify.
 ## 🙌 Contributing
 
 PRs are welcome! Please open an issue first to discuss major changes.
+
+## 🔊 Media & Voice support (FFmpeg)
+
+Some features (voice messages, media conversion) require [FFmpeg](https://ffmpeg.org/):
+
+1. Download FFmpeg from [ffmpeg.org/download](https://ffmpeg.org/download.html).
+2. Copy the contents of the `ffmpeg/bin` folder to a directory included in your system `PATH` (e.g., `C:\Windows\System32` on Windows, or `/usr/local/bin` on Linux/Mac).
+3. Verify installation by running `ffmpeg -version` in your terminal.
+
+If FFmpeg is not available in `PATH`, media and voice features will not work.
+
+---
+
+## ⚠️ Requirements
+
+- Python 3.10+
+- ffmpeg (see below)
+- Telegram bot token
+- Yandex Weather API key
