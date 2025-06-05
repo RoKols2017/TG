@@ -31,5 +31,9 @@ def _generate_voice_sync(text: str, lang: str = "ru") -> str:
 
 
 async def generate_voice(text: str, lang: str = "ru") -> str:
+    """
+    Асинхронно генерирует голосовой .ogg-файл из текста с помощью gTTS и ffmpeg.
+    Возвращает путь к созданному .ogg-файлу.
+    """
     loop = asyncio.get_event_loop()
     return await loop.run_in_executor(_executor, _generate_voice_sync, text, lang)

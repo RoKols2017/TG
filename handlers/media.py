@@ -11,7 +11,7 @@ IMG_DIR = "img"
 
 @router.message(F.photo)
 async def save_photo(message: Message, bot: Bot) -> None:
-    """Скачивает самое большое фото из сообщения и кладёт в ./img."""
+    """Обрабатывает получение фото — сохраняет самое большое фото в папку img/."""
     photo = message.photo[-1]                     # последнее = наибольшее
     file = await bot.get_file(photo.file_id)
 
