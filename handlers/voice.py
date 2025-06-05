@@ -9,6 +9,7 @@ router = Router()
 
 @router.message(Command("voice"))
 async def cmd_voice(message: types.Message, command: CommandObject):
+    """Обрабатывает команду /voice — генерирует голосовое сообщение из текста."""
     text = command.args
     if not text:
         await message.answer("⚠️ Использование: /voice <текст>")

@@ -11,6 +11,7 @@ CITY_RE = re.compile(r"^/weather\s+(.+)", re.IGNORECASE | re.DOTALL)
 
 @router.message(Command("weather"))
 async def cmd_weather(message: types.Message):
+    """Обрабатывает команду /weather — выводит погоду по указанному городу."""
     match = CITY_RE.match(message.text or "")
     if not match:
         await message.answer("⚠️ Укажите город: /weather Moscow")

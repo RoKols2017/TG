@@ -16,6 +16,7 @@ MultiBot is a multifunctional Telegram bot: weather, voice messages, photo savin
 | `/voice <text>`         | Generate a voice message (TTS, Russian, via gTTS+ffmpeg).                  |
 | Send a photo            | The bot saves the largest photo to the `img/` folder on the server.         |
 | Send any text (not cmd) | The bot automatically translates any text to English and replies.           |
+| `/add_student`            | Add a new student (name, age, grade, city) and get the weather forecast for the student's city. |
 
 - Geocoder: uses Yandex first, falls back to OSM Nominatim if no key.
 - Fully asynchronous, modular, and easily extensible.
@@ -26,7 +27,7 @@ MultiBot is a multifunctional Telegram bot: weather, voice messages, photo savin
 
 ## 🛠 Stack
 
-* Python ≥3.10 (tested on 3.10 – 3.12)
+* Python ≥3.10 (tested on 3.13)
 * aiogram 3.20.0post0
 * aiohttp for HTTP
 * python‑dotenv for configuration
@@ -81,6 +82,7 @@ handlers/
   voice.py             # /voice
   media.py             # Photo saving
   translate.py         # Auto-translate any text
+  students.py           # /add_student — add student, weather forecast for city
 utils/
   services.py          # Weather & geocoding (Yandex, OSM)
   formatters.py        # Weather formatting with emoji
@@ -98,6 +100,8 @@ requirements.txt       # Dependencies
 ```
 /weather Moscow
 /voice Hello, how are you?
+/add_student
+# The bot will sequentially ask for name, age, grade, city and immediately show the weather for the student's city.
 ```
 Send a photo — the bot will save it and reply with confirmation.
 Send any text — the bot will reply with the English translation.
@@ -168,3 +172,6 @@ If FFmpeg is not available in `PATH`, media and voice features will not work.
 - ffmpeg (see below)
 - Telegram bot token
 - Yandex Weather API key
+
+- The database now stores student info: name, age, grade, city.
+- After adding a student, the bot automatically sends the weather forecast for the entered city.

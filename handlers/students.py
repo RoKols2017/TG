@@ -2,7 +2,9 @@ from aiogram import Router, types, F
 from aiogram.filters.command import Command
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
-from utils.db import Student, get_session, create_tables
+from utils.db import Student, get_async_sessionmaker, create_tables
+from utils.services import YandexWeatherService
+from utils.formatters import format_weather
 
 router = Router()
 
@@ -10,6 +12,7 @@ class StudentForm(StatesGroup):
     name = State()
     age = State()
     grade = State()
+    city = State()
 
 @router.message(Command("add_student"))
 async def cmd_add_student(message: types.Message, state: FSMContext):
@@ -40,20 +43,40 @@ async def process_age(message: types.Message, state: FSMContext):
 
 @router.message(StudentForm.grade)
 async def process_grade(message: types.Message, state: FSMContext):
-    grade = message.text.strip()
+    await state.update_data(grade=message.text.strip())
+    await message.answer("Введите город проживания студента:")
+    await state.set_state(StudentForm.city)
+
+@router.message(StudentForm.city)
+async def process_city(message: types.Message, state: FSMContext):
+    city = message.text.strip()
     data = await state.get_data()
-    student = Student(name=data["name"], age=data["age"], grade=grade)
-    session = get_session()
-    try:
-        session.add(student)
-        session.commit()
-        await message.answer(f"✅ Студент {student.name} ({student.age} лет, {student.grade}) успешно добавлен!")
-    except Exception as e:
-        session.rollback()
-        await message.answer(f"❌ Ошибка при добавлении: {e}")
-    finally:
-        session.close()
+    student = Student(
+        name=data["name"],
+        age=data["age"],
+        grade=data["grade"],
+        city=city
+    )
+    sessionmaker = get_async_sessionmaker()
+    async with sessionmaker() as session:
+        try:
+            session.add(student)
+            await session.commit()
+            await message.answer(
+                f"✅ Студент {student.name} ({student.age} лет, {student.grade}, {student.city}) успешно добавлен!"
+            )
+            weather_service = YandexWeatherService()
+            weather_data = await weather_service.get_weather(city)
+            if weather_data:
+                weather_text = format_weather(city, weather_data)
+                await message.answer(weather_text)
+            else:
+                await message.answer("⚠️ Не удалось получить погоду для указанного города.")
+        except Exception as e:
+            await session.rollback()
+            await message.answer(f"❌ Ошибка при добавлении: {e}")
     await state.clear()
 
 # Автоматически создаём таблицы при первом импорте
-create_tables() 
+import asyncio
+asyncio.get_event_loop().run_until_complete(create_tables()) 
